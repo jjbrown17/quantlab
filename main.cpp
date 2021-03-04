@@ -91,7 +91,7 @@ int main()
 
     std::vector<trade> trades;
 
-    read_input("small.csv", trades);
+    read_input("input.csv", trades);
 
     // for (auto t : trades)
     //         std::cout << t << std::endl;
