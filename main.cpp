@@ -11,8 +11,6 @@
 
 #define ticker std::string
 
-using namespace std;
-
 void read_input(const std::string &filename, std::vector<trade> &trades)
 {
     std::ifstream file; //(filename);
@@ -32,14 +30,7 @@ void read_input(const std::string &filename, std::vector<trade> &trades)
         std::getline(ss, symbol, ',');
         std::getline(ss, quantity, ',');
         std::getline(ss, price);
-
-        // cout << line << '\n';
-        // cout << time << '\n';
-        // cout << symbol << '\n';
-        // cout << quantity << '\n';
-        // cout << price << '\n';
-
-        //std::cout << line << std::endl;
+        
         trades.emplace_back(symbol, stoll(time), stoi(quantity), stoi(price));
     }
 
@@ -49,17 +40,17 @@ void read_input(const std::string &filename, std::vector<trade> &trades)
 std::ostream &operator<<(std::ostream &o, const trade &t)
 {
 
-    o << "symbol: " << t.symbol << std::endl;
-    o << "time: " << t.time << std::endl;
-    o << "quantity: " << t.quantity << std::endl;
-    o << "price: " << t.price << std::endl;
+    o << "symbol: " << t.symbol << '\n';
+    o << "time: " << t.time << '\n';
+    o << "quantity: " << t.quantity << '\n';
+    o << "price: " << t.price << '\n';
 
     return o;
 }
 
 std::ostream &operator<<(std::ostream &o, const output_data &t)
 {
-    o << t.symbol << ',' << t.maxTimeGap << ',' << t.volume << ',' << t.weightedAveragePrice << ',' << t.maxPrice << std::endl;
+    o << t.symbol << ',' << t.maxTimeGap << ',' << t.volume << ',' << t.weightedAveragePrice << ',' << t.maxPrice << '\n';
     return o;
 }
 
@@ -72,7 +63,6 @@ std::map<ticker, output_data> process_trades(std::vector<trade> &trades){
             out[symbol] = output_data(symbol);
 
         auto& o = out[symbol];
-        //cout << o << t << endl;
 
         o.weightedAveragePrice = (t.quantity * t.price + o.weightedAveragePrice * o.volume)/(t.quantity + o.volume);
         o.maxTimeGap = t.time - o.lastTrade > o.maxTimeGap ? t.time - o.lastTrade : o.maxTimeGap;
@@ -94,11 +84,13 @@ int main()
     read_input("input.csv", trades);
 
     // for (auto t : trades)
-    //         std::cout << t << std::endl;
+    //         std::cout << t << '\n';
 
-    map<ticker, output_data> out = process_trades(trades);
+    std::map<ticker, output_data> out = process_trades(trades);
+
+    std::ofstream out_file("output.csv");
     
-    for_each(begin(out), end(out), [&](auto e){std::cout << e.second;});
+    std::for_each(begin(out), end(out), [&](auto e){out_file << e.second;});
     
     return 0;
 }
